@@ -1,7 +1,11 @@
 class MarvelService {
 
     _apiBase = 'https://gateway.marvel.com:443/v1/public/';
-    _apiKey = 'apikey=1c3a935b45ceef86ddb4ce6ecc5210b4'
+    _apiKey = 'apikey=1c3a935b45ceef86ddb4ce6ecc5210b4';
+    _apiNine = 'characters?limit=9&';
+
+    random = () => Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
+
     getResource = async (url) => {
         let res = await fetch(url);
 
@@ -22,11 +26,16 @@ class MarvelService {
         return this._transformCharacter(res.data.results[0]);
     }
 
+    get9Characters = async (id) => {
+        const res = await this.getResource(`${this._apiBase}${this._apiNine}${this._apiKey}`)
+        return res.data.results.map(this._transformCharacter);
+    }
+
     _transformCharacter = (char) => {
         let descr = char.description
-        if(descr === "") {
-            descr = "no bio yet";
-        } else if (descr.length >= 100) {
+        if(descr === "")
+            descr = "no description for this char";
+        else if (descr.length >= 100) {
             const truncated = descr.substring(0, 100)
             const lastSpaceIndex = truncated.lastIndexOf(" ");
             descr = truncated.substring(0, lastSpaceIndex) + " ...";
