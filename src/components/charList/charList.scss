@@ -40,4 +40,8 @@
         text-transform: uppercase;
         color: #fff;
     }
+    &__flex {
+        display: flex;
+        justify-content: center;
+    }
 }

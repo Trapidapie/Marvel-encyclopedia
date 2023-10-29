@@ -1,12 +1,15 @@
 import { Component } from 'react';
 import './charList.scss';
+import Spinner from '../spinner/Spinner';
 import MarvelService from '../../services/MarvelService';
 
 class CharList extends Component {
     nineCharacters = new MarvelService();
 
     state = {
-        characterList: [], // Добавьте состояние для хранения массива персонажей
+        characterList: [],
+        loading: true,
+        error: false,
     };
 
     componentDidMount() {
@@ -28,23 +31,42 @@ class CharList extends Component {
     }
 
     listOfNine = () => {
-        this.nineCharacters.get9Characters()
+        const promises = [];
+    
+        for (let i = 0; i < 9; i++) {
+            promises.push(this.nineCharacters.getCharacter(this.nineCharacters.random()));
+        }
+    
+        Promise.all(promises)
             .then(data => {
-                this.setState({ characterList: data }); // Сохраните данные в состоянии
+                this.setState({
+                    characterList: data,
+                    loading: false,
+                });
             })
             .catch(error => {
-                console.error('Произошла ошибка:', error);
+                this.listOfNine()
             });
     }
-
+    
     render() {
-        const { characterList } = this.state; // Получите массив персонажей из состояния
+        const { loading, error, characterList } = this.state;
+
+        if (error) {
+            return <div>Error occurred</div>; // Если есть ошибка, отобразите сообщение об ошибке
+        }
+
+        const spinner = loading ? <Spinner/> : null;
+        const content = characterList.map(char => this.CharShowcase(char));
 
         return (
             <div className="char__list">
                 <ul className="char__grid">
-                    {characterList.map(char => this.CharShowcase(char))} {/* Используйте map для отображения элементов */}
+                    {content}
                 </ul>
+                <div className="char__flex">
+                    {spinner} 
+                </div>
                 <button className="button button__main button__long">
                     <div className="inner">load more</div>
                 </button>
