@@ -26,11 +26,6 @@ class MarvelService {
         return this._transformCharacter(res.data.results[0]);
     }
 
-    get9Characters = async (id) => {
-        const res = await this.getResource(`${this._apiBase}${this._apiNine}${this._apiKey}`)
-        return res.data.results.map(this._transformCharacter);
-    }
-
     _transformCharacter = (char) => {
         let descr = char.description
         if(descr === "")
@@ -42,11 +37,13 @@ class MarvelService {
         }
         
         return{
+            id: char.id,
             name: char.name,
             description: descr,
             thumbnail: char.thumbnail.path + "." + char.thumbnail.extension,
             homepage: char.urls[0].url,
             wiki: char.urls[1].url,
+            comics: char.comics.items
         }
     }
 }

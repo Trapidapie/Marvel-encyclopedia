@@ -4,22 +4,27 @@ import Spinner from '../spinner/Spinner';
 import MarvelService from '../../services/MarvelService';
 
 class CharList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            characterList: [],
+            loading: true,
+            error: false,
+        };
+    }
+
     nineCharacters = new MarvelService();
 
-    state = {
-        characterList: [],
-        loading: true,
-        error: false,
-    };
 
     componentDidMount() {
         this.listOfNine();
     }
 
     CharShowcase = (char) => {
-        const { name, thumbnail } = char;
+        const { name, thumbnail, id} = char;
         return (
-            <li className="char__item" key={char.id}>
+            <li key={id} className="char__item" 
+                onClick={() => this.props.onCharSelected(id)}>
                 {thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' ? (
                 <img src={thumbnail} alt={name} style={{ objectFit: 'contain' }} />
                 ) : (
