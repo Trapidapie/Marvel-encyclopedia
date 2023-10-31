@@ -10,18 +10,18 @@ class CharList extends Component {
             characterList: [],
             loading: true,
             error: false,
+            charactersToDisplay: 9,
         };
     }
 
     nineCharacters = new MarvelService();
-
 
     componentDidMount() {
         this.listOfNine();
     }
 
     CharShowcase = (char) => {
-        const { name, thumbnail, id} = char;
+        const { name, thumbnail, id } = char;
         return (
             <li key={id} className="char__item" 
                 onClick={() => this.props.onCharSelected(id)}>
@@ -37,31 +37,42 @@ class CharList extends Component {
 
     listOfNine = () => {
         const promises = [];
-    
-        for (let i = 0; i < 9; i++) {
+        const { charactersToDisplay } = this.state;
+
+        for (let i = 0; i < charactersToDisplay; i++) {
             promises.push(this.nineCharacters.getCharacter(this.nineCharacters.random()));
         }
-    
+
         Promise.all(promises)
             .then(data => {
-                this.setState({
-                    characterList: data,
+                this.setState(prevState => ({
+                    characterList: [...prevState.characterList, ...data], // Добавьте новых персонажей к уже существующим
                     loading: false,
-                });
+                }));
             })
             .catch(error => {
-                this.listOfNine()
+                this.listOfNine();
             });
     }
+
+    handleLoadMore = () => {
+        this.setState(prevState => ({
+            charactersToDisplay: prevState.charactersToDisplay + 9,
+            loading: true,
+        }), () => {
+            this.listOfNine();
+        });
+    }
+
     
     render() {
         const { loading, error, characterList } = this.state;
 
         if (error) {
-            return <div>Error occurred</div>; // Если есть ошибка, отобразите сообщение об ошибке
+            return <div>Error occurred</div>;
         }
 
-        const spinner = loading ? <Spinner/> : null;
+        const spinner = loading ? <Spinner /> : null;
         const content = characterList.map(char => this.CharShowcase(char));
 
         return (
@@ -72,8 +83,8 @@ class CharList extends Component {
                 <div className="char__flex">
                     {spinner} 
                 </div>
-                <button className="button button__main button__long">
-                    <div className="inner">load more</div>
+                <button className="button button__main button__long" onClick={this.handleLoadMore}>
+                     <div className="inner">load more</div>
                 </button>
             </div>
         );

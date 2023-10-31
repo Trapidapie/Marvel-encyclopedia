@@ -24,7 +24,6 @@ class App extends Component {
                     <RandomChar />
                     <div className="char__content">
                         <CharList onCharSelected={this.onCharSelected} />
-                        {/* Добавьте ErrorBoundary вокруг CharInfo */}
                         <ErrorBoundary>
                             <CharInfo charId={this.state.selectedChar} />
                         </ErrorBoundary>
@@ -35,6 +34,5 @@ class App extends Component {
         )
     }
 }
-
 
 export default App;
