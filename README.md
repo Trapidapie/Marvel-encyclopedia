@@ -1,5 +1,8 @@
-# Getting Started with Create React App
+#This is my +- big project on react, that's what I thought it was when I started, but I can say that I wrote it not
+very correctly and somewhere in that moment I got to know the hooks, but it became clear to me that despite the success
+of the front-end is not my thing and I did not finish it 
 
+# Getting Started with Create React App
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
